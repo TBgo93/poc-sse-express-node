@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index</title>
+  <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+<body>
+  <style>
+    body {
+      place-content: center;
+      height: 100vh;
+    }
+  </style>
+  <div id="root"></div>
+  <script type="module">
+    const ES_CT = new EventSource("/current-time")
+    const ES = new EventSource("/events")
+
+    const $root = document.querySelector("#root")
+    const $time = document.createElement("code")
+    const $code = document.createElement("code")
+    const $br = document.createElement("br")
+
+    $root.appendChild($time)
+    $root.appendChild($br)
+    $root.appendChild($code)
+
+    ES_CT.addEventListener('current-time', (event) => {
+      $time.innerHTML = event.data
+    })
+
+    ES.addEventListener('events', (event) => {
+      $code.innerHTML = event.data
+    })
+
+    ES_CT.onerror = (error) => {
+      console.error("SSE Error:", error)
+      ES_CT.close()
+    }
+  </script>
+</body>
+</html>
